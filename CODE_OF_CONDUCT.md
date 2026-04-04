@@ -20,7 +20,7 @@ We as contributors and maintainers pledge to make participation in the Urban Tra
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by contacting the project team at **conduct@techtitan24.example.com**.
+Instances of abusive, harassing, or otherwise unacceptable behaviour may be reported by contacting the project team at **yash.vadge04@gmail.com**.
 
 All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
 
