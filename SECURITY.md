@@ -11,7 +11,7 @@
 
 **Please do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, email us at: **security@techtitan24.example.com**
+Instead, email us at: **yash.vadge04@gmail.com**
 
 Include:
 - Description of the vulnerability
