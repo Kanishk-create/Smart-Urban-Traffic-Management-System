@@ -1,0 +1,114 @@
+version: "3.9"
+
+services:
+  api:
+    build: { context: ., dockerfile: Dockerfile }
+    container_name: utm-api
+    restart: unless-stopped
+    ports: ["8000:8000"]
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://utm_user:utm_password@postgres:5432/utm_db
+      - REDIS_URL=redis://redis:6379/0
+      - MQTT_BROKER=mosquitto
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+    volumes: [./models:/app/models, ./logs:/app/logs]
+    networks: [utm-net]
+
+  dashboard:
+    build: { context: ./src/dashboard, dockerfile: Dockerfile }
+    container_name: utm-dashboard
+    ports: ["3000:80"]
+    depends_on: [api]
+    networks: [utm-net]
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: utm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: utm_user
+      POSTGRES_PASSWORD: utm_password
+      POSTGRES_DB: utm_db
+    ports: ["5432:5432"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks: [utm-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U utm_user -d utm_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: utm-influxdb
+    ports: ["8086:8086"]
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminpassword
+      DOCKER_INFLUXDB_INIT_ORG: tech-titan
+      DOCKER_INFLUXDB_INIT_BUCKET: traffic-metrics
+    volumes: [influxdb_data:/var/lib/influxdb2]
+    networks: [utm-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: utm-redis
+    ports: ["6379:6379"]
+    volumes: [redis_data:/data]
+    networks: [utm-net]
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: utm-mosquitto
+    ports: ["1883:1883", "9001:9001"]
+    volumes:
+      - ./configs/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+    networks: [utm-net]
+
+  worker:
+    build: { context: ., dockerfile: Dockerfile }
+    container_name: utm-worker
+    command: celery -A src.api.celery_app worker --loglevel=info --concurrency=4
+    env_file: .env
+    depends_on: [redis, postgres]
+    volumes: [./models:/app/models, ./logs:/app/logs]
+    networks: [utm-net]
+
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: utm-prometheus
+    ports: ["9090:9090"]
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks: [utm-net]
+
+  grafana:
+    image: grafana/grafana:10.2.4
+    container_name: utm-grafana
+    ports: ["3001:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on: [prometheus, influxdb]
+    networks: [utm-net]
+
+volumes:
+  postgres_data:
+  influxdb_data:
+  redis_data:
+  mosquitto_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  utm-net:
+    driver: bridge
