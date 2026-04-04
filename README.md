@@ -80,14 +80,14 @@ Our platform integrates six interconnected layers:
 ```
                     ┌───────────────────────────────────┐
                     │          CLOUD BACKEND            │
-                    │  ┌──────────┐  ┌──────────────┐  │
-                    │  │ FastAPI  │  │  ML Models   │  │
-                    │  │   API   │  │ YOLO/XGBoost │  │
-                    │  └────┬─────┘  └──────┬───────┘  │
+                    │  ┌──────────┐  ┌──────────────┐   │
+                    │  │ FastAPI  │  │  ML Models   │   │
+                    │  │   API    │  │ YOLO/XGBoost │   │
+                    │  └────┬─────┘  └──────┬───────┘   │
                     │       │               │           │
                     │  ┌────▼───────────────▼────────┐  │
                     │  │  PostgreSQL + InfluxDB      │  │
-                    │  └────────────────────────────┘  │
+                    │  └──────────────────────────── ┘  │
                     └────────────┬──────────────────────┘
                                  │ 5G / LoRa
          ┌───────────────────────┼──────────────────────┐
@@ -96,13 +96,13 @@ Our platform integrates six interconnected layers:
 │  EDGE NODE #1  │    │  EDGE NODE #2    │    │  EDGE NODE #N  │
 │  Intersection  │    │  Highway Ramp    │    │  Smart Zone    │
 │  Camera + IoT  │    │  Camera + IoT    │    │  Camera + IoT  │
-│  🚦 Signal     │    │  🚦 Signal       │    │  🚦 Signal     │
+│  🚦 Signal     │    │  🚦 Signal      │    │  🚦 Signal     │
 └────────────────┘    └──────────────────┘    └────────────────┘
          │                       │                      │
 ┌────────▼───────────────────────▼──────────────────────▼──────┐
-│              COMMUTER INTERFACES                              │
-│     📱 Mobile App    🖥 Dashboard    📺 Roadside Display      │
-└───────────────────────────────────────────────────────────────┘
+│              COMMUTER INTERFACES                             │
+│     📱 Mobile App    🖥 Dashboard    📺 Roadside Display    │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -294,11 +294,11 @@ pytest tests/ -v --cov=src --cov-report=html
       │
       ▼
 ┌─────────────┐    ┌──────────────┐    ┌─────────────────────┐
-│  YOLOv8     │───▶│ Edge Device  │───▶│  MQTT / 5G / LoRa   │
+│  YOLOv8     │───▶│ Edge Device  │───▶│  MQTT / 5G / LoRa  │
 │  Detection  │    │ (Pi/Jetson)  │    │  Message Broker     │
 └─────────────┘    └──────────────┘    └──────────┬──────────┘
                                                    │
-📟 IoT Sensors ─────────────────────────────────▶  │
+📟 IoT Sensors ─────────────────────────────────▶ │
    (Speed, AQ, Inductive Loops)                    │
                                                    ▼
                                       ┌────────────────────────┐
@@ -314,7 +314,7 @@ pytest tests/ -v --cov=src --cov-report=html
                          └────────┬────────┘                 │
                                   ▼                          │
                         ┌──────────────────┐                 │
-                        │    ML Engine     │◀────────────────┘
+                        │    ML Engine     │◀───────────────┘
                         │ (XGBoost / RL)   │
                         └──────┬───────────┘
                                │
