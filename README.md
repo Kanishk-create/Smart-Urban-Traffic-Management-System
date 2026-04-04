@@ -11,7 +11,7 @@
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)](.github/workflows)
 [![Team](https://img.shields.io/badge/Team-Tech%20Titan%20%2324-blueviolet.svg)](#team)
 
-> **Tech Titan — Team #24** | AI + IoT platform for smarter, greener, safer urban mobility.
+> **Tech Titans** | AI + IoT platform for smarter, greener, safer urban mobility.
 
 </div>
 
