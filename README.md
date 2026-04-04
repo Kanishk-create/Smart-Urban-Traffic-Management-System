@@ -62,7 +62,7 @@ Our platform integrates six interconnected layers:
 ┌─────────────────────────────────────────────────────────┐
 │               URBAN TRAFFIC PLATFORM                    │
 │                                                         │
-│  📷 SENSE → 🧠 ANALYZE → 📡 TRANSMIT → 🚦 CONTROL      │
+│  📷 SENSE → 🧠 ANALYZE → 📡 TRANSMIT → 🚦 CONTROL     │
 └─────────────────────────────────────────────────────────┘
 ```
 
